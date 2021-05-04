@@ -45,7 +45,7 @@ else:
 
 msg = """
 This node takes keypresses from the keyboard and publishes them
-as Twist messages. It works best with a US keyboard layout.
+as Wrench messages. It works best with a US keyboard layout.
 ---------------------------
 Moving around:
    u    i    o
@@ -135,7 +135,7 @@ def main():
     rclpy.init()
 
     node = rclpy.create_node('teleop_twist_keyboard')
-    pub = node.create_publisher(geometry_msgs.msg.Twist, 'cmd_vel', 10)
+    pub = node.create_publisher(geometry_msgs.msg.Wrench, 'cmd_wrench', 10)
 
     speed = 0.5
     turn = 1.0
@@ -171,27 +171,27 @@ def main():
                 if (key == '\x03'):
                     break
 
-            twist = geometry_msgs.msg.Twist()
-            twist.linear.x = x * speed
-            twist.linear.y = y * speed
-            twist.linear.z = z * speed
-            twist.angular.x = 0.0
-            twist.angular.y = 0.0
-            twist.angular.z = th * turn
-            pub.publish(twist)
+            wrench = geometry_msgs.msg.Wrench()
+            wrench.force.x = x * speed
+            wrench.force.y = y * speed
+            wrench.force.z = z * speed
+            wrench.torque.x = 0.0
+            wrench.torque.y = 0.0
+            wrench.torque.z = th * turn
+            pub.publish(wrench)
 
     except Exception as e:
         print(e)
 
     finally:
-        twist = geometry_msgs.msg.Twist()
-        twist.linear.x = 0.0
-        twist.linear.y = 0.0
-        twist.linear.z = 0.0
-        twist.angular.x = 0.0
-        twist.angular.y = 0.0
-        twist.angular.z = 0.0
-        pub.publish(twist)
+        wrench = geometry_msgs.msg.Wrench()
+        wrench.force.x = 0.0
+        wrench.force.y = 0.0
+        wrench.force.z = 0.0
+        wrench.torque.x = 0.0
+        wrench.torque.y = 0.0
+        wrench.torque.z = 0.0
+        pub.publish(wrench)
 
         restoreTerminalSettings(settings)
 
