@@ -34,6 +34,7 @@
 import sys
 
 import geometry_msgs.msg
+import std_msgs.msg
 import rclpy
 
 if sys.platform == 'win32':
@@ -136,6 +137,7 @@ def main():
 
     node = rclpy.create_node('teleop_twist_keyboard')
     pub = node.create_publisher(geometry_msgs.msg.Wrench, 'cmd_wrench', 10)
+    array_pub = node.create_publisher(std_msgs.msg.Float64MultiArray, 'faked_forces_controller/commands', 10)
 
     speed = 0.5
     turn = 1.0
@@ -180,6 +182,10 @@ def main():
             wrench.torque.z = th * turn
             pub.publish(wrench)
 
+            array = std_msgs.msg.Float64MultiArray()
+            array.data = [wrench.force.x, wrench.force.y, wrench.force.z, wrench.torque.x, wrench.torque.y, wrench.torque.z]
+            array_pub.publish(array)
+
     except Exception as e:
         print(e)
 
@@ -192,6 +198,10 @@ def main():
         wrench.torque.y = 0.0
         wrench.torque.z = 0.0
         pub.publish(wrench)
+
+        array = std_msgs.msg.Float64MultiArray()
+        array.data = [wrench.force.x, wrench.force.y, wrench.force.z, wrench.torque.x, wrench.torque.y, wrench.torque.z]
+        array_pub.publish(array)
 
         restoreTerminalSettings(settings)
 
